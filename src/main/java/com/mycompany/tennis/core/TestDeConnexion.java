@@ -1,13 +1,37 @@
 package com.mycompany.tennis.core;
 
+import com.mysql.cj.jdbc.MysqlDataSource;
+import org.apache.commons.dbcp2.BasicDataSource;
+
 import java.sql.*;
 
 public class TestDeConnexion {
     public static void main(String... args){
         Connection conn = null;
         try {
-            //MySQL driver MySQL Connector
+
+            /* → V1 1️⃣ 🌐 Connexion avec le driver manager MySQL Driver Connector
             conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/tennis?useSSL=false","root","root");
+             */
+
+            /* → V2 2️⃣ 🌐 Connexion avec l'interface MySQL DataSource
+            MysqlDataSource dataSource = new MysqlDataSource();
+            dataSource.setServerName("localhost");
+            dataSource.setPort(3306);
+            dataSource.setDatabaseName("tennis");
+            dataSource.setUseSSL(false);
+            dataSource.setUser("root");
+            dataSource.setPassword("root");
+            */
+
+            /* → V3 3️⃣ 🌐 Connexion avec la librairie de pool de connexions "DBCP" d'Apache */
+            BasicDataSource dataSource = new BasicDataSource();
+            dataSource.setInitialSize(5);
+            dataSource.setUrl("jdbc:mysql://localhost:3306/tennis?useSSL=false");
+            dataSource.setUsername("root");
+            dataSource.setPassword("root");
+
+            conn = dataSource.getConnection();
             conn.setAutoCommit(false);
 
             // Requete SQL
