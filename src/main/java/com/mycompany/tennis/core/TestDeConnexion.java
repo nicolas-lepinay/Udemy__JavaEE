@@ -10,11 +10,11 @@ public class TestDeConnexion {
         Connection conn = null;
         try {
 
-            /* → V1 1️⃣ 🌐 Connexion avec le driver manager MySQL Driver Connector
+            /* V1 → 🌐 Connexion avec le driver manager MySQL Driver Connector
             conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/tennis?useSSL=false","root","root");
              */
 
-            /* → V2 2️⃣ 🌐 Connexion avec l'interface MySQL DataSource
+            /* V2 → 🌐 Connexion avec l'interface MySQL DataSource
             MysqlDataSource dataSource = new MysqlDataSource();
             dataSource.setServerName("localhost");
             dataSource.setPort(3306);
@@ -24,7 +24,7 @@ public class TestDeConnexion {
             dataSource.setPassword("root");
             */
 
-            /* → V3 3️⃣ 🌐 Connexion avec la librairie de pool de connexions "DBCP" d'Apache */
+            /* V3 → 🌐 Connexion avec la librairie de pool de connexions "DBCP" d'Apache */
             BasicDataSource dataSource = new BasicDataSource();
             dataSource.setInitialSize(5);
             dataSource.setUrl("jdbc:mysql://localhost:3306/tennis?useSSL=false");
@@ -34,7 +34,7 @@ public class TestDeConnexion {
             conn = dataSource.getConnection();
             conn.setAutoCommit(false);
 
-            // Requete SQL
+            // Requête SQL
             PreparedStatement statement = conn.prepareStatement("INSERT INTO JOUEUR (NOM, PRENOM, SEXE) VALUES (?, ?, ?)");
             String nom = "Capriati";
             String prenom = "Jennifer";
