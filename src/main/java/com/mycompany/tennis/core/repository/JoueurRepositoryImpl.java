@@ -169,7 +169,7 @@ public class JoueurRepositoryImpl {
             conn = dataSource.getConnection();
 
             // Requête SQL
-            PreparedStatement statement = conn.prepareStatement("SELECT NOM, PRENOM, SEXE FROM JOUEUR");
+            PreparedStatement statement = conn.prepareStatement("SELECT ID, NOM, PRENOM, SEXE FROM JOUEUR");
             ResultSet rs =statement.executeQuery();
 
             while (rs.next()) {
