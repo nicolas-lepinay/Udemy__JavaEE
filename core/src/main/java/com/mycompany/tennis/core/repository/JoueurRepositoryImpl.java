@@ -44,7 +44,7 @@ public class JoueurRepositoryImpl {
         }
         finally {
             try {
-                if (conn!=null) {
+                if (conn != null) {
                     conn.close();
                 }
             } catch (SQLException e) {
