@@ -13,4 +13,8 @@ public class JoueurService {
     public void createJoueur(Joueur joueur) {
         joueurRepository.create(joueur);
     }
+
+    public Joueur getJoueur(Long id) {
+        return joueurRepository.getById(id);
+    }
 }
