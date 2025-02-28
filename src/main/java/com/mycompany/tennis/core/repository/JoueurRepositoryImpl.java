@@ -18,14 +18,19 @@ public class JoueurRepositoryImpl {
             BasicDataSource dataSource = DataSourceProvider.getSingleDataSourceInstance();
             conn = dataSource.getConnection();
 
-            // Requête SQL
-            PreparedStatement statement = conn.prepareStatement("INSERT INTO JOUEUR (NOM, PRENOM, SEXE) VALUES (?, ?, ?)");
+            // Requête SQL (avec renvoi des enregistrements créés)
+            PreparedStatement statement = conn.prepareStatement("INSERT INTO JOUEUR (NOM, PRENOM, SEXE) VALUES (?, ?, ?)", PreparedStatement.RETURN_GENERATED_KEYS);
 
             statement.setString(1, joueur.getNom());
             statement.setString(2, joueur.getPrenom());
             statement.setString(3, joueur.getSexe().toString());
 
             statement.executeUpdate();
+            ResultSet rs = statement.getGeneratedKeys(); // Tous les enregistrements créés
+
+            if(rs.next()) {
+                joueur.setId(rs.getLong(1)); // Les ID commencent à 1 ici
+            }
 
             // Success
             System.out.println("Joueur créé avec succès.");

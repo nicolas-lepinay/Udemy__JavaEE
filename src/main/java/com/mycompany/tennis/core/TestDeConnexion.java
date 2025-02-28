@@ -1,33 +1,47 @@
 package com.mycompany.tennis.core;
 
+import com.mycompany.tennis.core.entity.Epreuve;
 import com.mycompany.tennis.core.entity.Joueur;
+import com.mycompany.tennis.core.entity.Match;
+import com.mycompany.tennis.core.entity.Score;
 import com.mycompany.tennis.core.repository.JoueurRepositoryImpl;
+import com.mycompany.tennis.core.service.JoueurService;
+import com.mycompany.tennis.core.service.MatchService;
 
 import java.util.List;
 
 public class TestDeConnexion {
     public static void main(String... args) {
-        JoueurRepositoryImpl joueurRepository = new JoueurRepositoryImpl();
-        // GET
-        Joueur ferrer = joueurRepository.getById(41L);
-        System.out.println(ferrer.getPrenom() + " " + ferrer.getNom().toUpperCase());
+        MatchService matchService = new MatchService();
 
-        // POST
-        /*
-        Joueur noah = new Joueur();
-        noah.setNom("Noah");
-        noah.setPrenom("Yannick");
-        noah.setSexe('H');
-        joueurRepository.create(noah);
-        */
+        // Joueurs
+        Joueur federer = new Joueur();
+        federer.setId(32L);
 
-        // GET ALL
-        List<Joueur> list = joueurRepository.list();
+        Joueur murray = new Joueur();
+        murray.setId(34L);
 
-        for (Joueur joueur: list) {
-            System.out.println(joueur.getPrenom() + " " + joueur.getNom().toUpperCase());
-        }
+        // Epreuve
+        Epreuve epreuve = new Epreuve();
+        epreuve.setId(10L);
 
+        // Score
+        Score score = new Score();
+        score.setSet1((byte)3);
+        score.setSet2((byte)4);
+        score.setSet3((byte)6);
+
+        // Match
+        Match match = new Match();
+        match.setVainqueur(federer);
+        match.setFinaliste(murray);
+        match.setEpreuve(epreuve);
+        match.setScore(score);
+
+        score.setMatch(match);
+
+        matchService.enregistrerNouveauMatch(match);
+        System.out.println("L'ID du match créé est : " + match.getId());
     }
 }
 
