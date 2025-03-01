@@ -1,8 +1,11 @@
 package com.mycompany.tennis.core.repository;
 
 import com.mycompany.tennis.core.DataSourceProvider;
+import com.mycompany.tennis.core.HibernateUtil;
 import com.mycompany.tennis.core.entity.Joueur;
 import org.apache.commons.dbcp2.BasicDataSource;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,43 +16,17 @@ import java.util.List;
 
 public class JoueurRepositoryImpl {
     public void create(Joueur joueur) {
-        Connection conn = null;
-        try {
-            BasicDataSource dataSource = DataSourceProvider.getSingleDataSourceInstance();
-            conn = dataSource.getConnection();
+        Transaction tx = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
 
-            // Requête SQL (avec renvoi des enregistrements créés)
-            PreparedStatement statement = conn.prepareStatement("INSERT INTO JOUEUR (NOM, PRENOM, SEXE) VALUES (?, ?, ?)", PreparedStatement.RETURN_GENERATED_KEYS);
+            tx = session.beginTransaction();
+            session.persist(joueur); // Ajout de l'objet dans la session Hibernate (état transient → état persistant)
+            tx.commit();
 
-            statement.setString(1, joueur.getNom());
-            statement.setString(2, joueur.getPrenom());
-            statement.setString(3, joueur.getSexe().toString());
-
-            statement.executeUpdate();
-            ResultSet rs = statement.getGeneratedKeys(); // Tous les enregistrements créés
-
-            if(rs.next()) {
-                joueur.setId(rs.getLong(1)); // Les ID commencent à 1 ici
-            }
-
-            // Success
             System.out.println("Joueur créé avec succès.");
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            try {
-                if (conn != null) conn.rollback();
-            } catch(SQLException e2) {
-                e2.printStackTrace();
-            }
-        }
-        finally {
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            if (tx != null) tx.rollback();
         }
     }
 
@@ -122,6 +99,21 @@ public class JoueurRepositoryImpl {
         }
     }
 
+    // Version avec Hibernate
+    public Joueur getById(Long id) {
+        Joueur joueur = null;
+
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            joueur = session.get(Joueur.class, id);
+            System.out.println("Joueur #" + id + " lu avec succès.");
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
+        return joueur;
+    }
+
+    // Version avec JDBC uniquement et sans Hibernate
+    /*
     public Joueur getById(Long id) {
         Connection conn = null;
         Joueur joueur = null;
@@ -164,6 +156,7 @@ public class JoueurRepositoryImpl {
         }
         return joueur;
     }
+     */
 
     public List<Joueur> list() {
         Connection conn = null;

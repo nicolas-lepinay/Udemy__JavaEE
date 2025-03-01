@@ -1,5 +1,12 @@
 package com.mycompany.tennis.core.entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+
+/*
+@Entity
+@Table(name = "MATCH_TENNIS")
+ */
 public class Match {
     private Long id;
     private Joueur vainqueur;
