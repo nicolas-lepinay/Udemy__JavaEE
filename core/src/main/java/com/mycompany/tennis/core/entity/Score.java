@@ -1,12 +1,24 @@
 package com.mycompany.tennis.core.entity;
 
+import jakarta.persistence.*;
+
+@Entity(name = "SCORE_VAINQUEUR")
 public class Score {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "SET_1")
     private Byte set1;
+    @Column(name = "SET_2")
     private Byte set2;
+    @Column(name = "SET_3")
     private Byte set3;
+    @Column(name = "SET_4")
     private Byte set4;
+    @Column(name = "SET_5")
     private Byte set5;
+    @Transient // Exclut cet attribut du mapping Hibernate
     private Match match;
 
     public Long getId() {

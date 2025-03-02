@@ -1,9 +1,21 @@
 package com.mycompany.tennis.core.entity;
 
+import jakarta.persistence.*;
+import org.hibernate.annotations.Type;
+
+@Entity
 public class Epreuve {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private Short annee;
+
+    @ManyToOne(fetch = FetchType.LAZY) // FetchType.EAGER : fait des jointures systématiquement (peu performant). FetchType.LAZY : fait des jointures uniquement si nécessaire (plus performant).
+    @JoinColumn(name = "ID_TOURNOI")
     private Tournoi tournoi;
+
+    @Column(name = "TYPE_EPREUVE")
     private Character typeEpreuve;
 
     public Long getId() {

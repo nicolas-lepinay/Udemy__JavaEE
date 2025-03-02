@@ -19,5 +19,10 @@
         <property name="hbm2ddl.auto">validate</property>
 
         <mapping class="com.mycompany.tennis.core.entity.Joueur" />
+        <mapping class="com.mycompany.tennis.core.entity.Epreuve" />
+        <mapping class="com.mycompany.tennis.core.entity.Match" />
+        <mapping class="com.mycompany.tennis.core.entity.Score" />
+        <mapping class="com.mycompany.tennis.core.entity.Tournoi" />
+
     </session-factory>
 </hibernate-configuration>
