@@ -15,12 +15,12 @@ import java.util.List;
 
 public class EpreuveRepositoryImpl {
     public void create(Epreuve epreuve, Session session) {
-        session.persist(epreuve); // Ajout de l'objet dans la session Hibernate (état transient → état persistant)
+        session.persist(epreuve); //  Ajout de l'objet dans la session Hibernate (état transient → état persistant)
     }
 
     public void delete(Long id, Session session) {
         Epreuve epreuve = session.get(Epreuve.class, id);
-        if (epreuve != null) session.remove(epreuve);
+        if (epreuve !=  null) session.remove(epreuve);
     }
 
     public Epreuve getById(Long id, Session session) {
