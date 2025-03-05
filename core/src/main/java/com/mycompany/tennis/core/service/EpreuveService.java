@@ -26,9 +26,10 @@ public class EpreuveService {
             tx = session.beginTransaction();
             // Récupère l'épreuve
             epreuve = epreuveRepository.getById(id, session);
-            // Récupère le tournoi (nécessite Hibernate.initialize() uniquement SANS Dto, car Tournoi est en LazyLoading
-            // Inutile avec les Dto
+            // Récupère le tournoi (nécessite Hibernate.initialize() (uniquement SANS Dto ?), car Tournoi est en LazyLoading
+            // Inutile avec les Dto ?
             Hibernate.initialize(epreuve.getTournoi()); // Hibernate.unproxy() depuis Hibernate 5.2
+
             dto = new EpreuveFullDto();
             dto.setId(epreuve.getId());
             dto.setAnnee(epreuve.getAnnee());

@@ -18,7 +18,7 @@ public class Match {
     @JoinColumn(name = "ID_FINALISTE")
     private Joueur finaliste;
 
-    @ManyToOne
+    @OneToOne(fetch = FetchType.LAZY) // Relation 1-1
     @JoinColumn(name = "ID_EPREUVE")
     private Epreuve epreuve;
 
