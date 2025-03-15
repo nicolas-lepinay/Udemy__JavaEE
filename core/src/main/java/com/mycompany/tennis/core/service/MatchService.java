@@ -5,6 +5,9 @@ import com.mycompany.tennis.core.dto.*;
 import com.mycompany.tennis.core.entity.Epreuve;
 import com.mycompany.tennis.core.entity.Joueur;
 import com.mycompany.tennis.core.entity.Match;
+import com.mycompany.tennis.core.entity.Score;
+import com.mycompany.tennis.core.repository.EpreuveRepositoryImpl;
+import com.mycompany.tennis.core.repository.JoueurRepositoryImpl;
 import com.mycompany.tennis.core.repository.MatchRepositoryImpl;
 import com.mycompany.tennis.core.repository.ScoreRepositoryImpl;
 import org.hibernate.Hibernate;
@@ -14,10 +17,14 @@ import org.hibernate.Transaction;
 public class MatchService {
 
     private ScoreRepositoryImpl scoreRepository;
+    private EpreuveRepositoryImpl epreuveRepository;
+    private JoueurRepositoryImpl joueurRepository;
     private MatchRepositoryImpl matchRepository;
     public MatchService() {
         this.scoreRepository = new ScoreRepositoryImpl();
         this.matchRepository = new MatchRepositoryImpl();
+        this.epreuveRepository = new EpreuveRepositoryImpl();
+        this.joueurRepository = new JoueurRepositoryImpl();
     }
 
     public void enregistrerNouveauMatch(Match match) {
@@ -26,6 +33,40 @@ public class MatchService {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             matchRepository.create(match, session);
             scoreRepository.create(match.getScore(), session);
+        } catch (Throwable t) {
+            t.printStackTrace();
+            if (tx != null) tx.rollback();
+        }
+    }
+
+    public void createMatch(MatchDto matchDto) {
+        Transaction tx = null;
+
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            tx = session.beginTransaction();
+
+            // Créer le match
+            Match match = new Match();
+            match.setEpreuve(epreuveRepository.getById(matchDto.getEpreuve().getId(), session));
+            match.setFinaliste(joueurRepository.getById(matchDto.getFinaliste().getId(), session));
+            match.setVainqueur(joueurRepository.getById(matchDto.getVainqueur().getId(), session));
+
+            // Créer le score
+            Score score = new Score();
+            score.setMatch(match);
+            score.setSet1(matchDto.getScore().getSet1());
+            score.setSet2(matchDto.getScore().getSet2());
+            score.setSet3(matchDto.getScore().getSet3());
+            score.setSet4(matchDto.getScore().getSet4());
+            score.setSet5(matchDto.getScore().getSet5());
+            match.setScore(score);
+
+            // Rendre persistants le match
+            // (et toutes ses entités liées avec à la propriété "cascade = CascadeType.PERSIST" dans l'enttié Match)
+            matchRepository.create(match, session);
+
+            tx.commit();
+            System.out.println("Match créé avec succès.");
         } catch (Throwable t) {
             t.printStackTrace();
             if (tx != null) tx.rollback();

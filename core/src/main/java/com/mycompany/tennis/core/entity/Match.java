@@ -23,7 +23,11 @@ public class Match {
     private Epreuve epreuve;
 
     //@Transient // Exclut cet attribut du mapping Hibernate
-    @OneToOne(mappedBy = "match", fetch = FetchType.LAZY) // Attribut "match" de la classe Score
+    @OneToOne(
+            fetch = FetchType.LAZY,
+            mappedBy = "match", // Attribut "match" de la classe Score
+            cascade = CascadeType.PERSIST // En persistant le Match, toutes ses entités liées (comme Score) seront aussi persistantes
+    )
     private Score score;
 
     public Long getId() {
