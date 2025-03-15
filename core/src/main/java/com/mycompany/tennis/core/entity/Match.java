@@ -22,7 +22,8 @@ public class Match {
     @JoinColumn(name = "ID_EPREUVE")
     private Epreuve epreuve;
 
-    @Transient // Exclut cet attribut du mapping Hibernate
+    //@Transient // Exclut cet attribut du mapping Hibernate
+    @OneToOne(mappedBy = "match", fetch = FetchType.LAZY) // Attribut "match" de la classe Score
     private Score score;
 
     public Long getId() {
