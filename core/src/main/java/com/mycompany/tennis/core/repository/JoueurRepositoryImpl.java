@@ -6,6 +6,7 @@ import com.mycompany.tennis.core.entity.Joueur;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -29,46 +30,15 @@ public class JoueurRepositoryImpl {
         return joueur;
     }
 
-    public List<Joueur> list() {
-        Connection conn = null;
-        List<Joueur> joueurs = new ArrayList<>();
+    public List<Joueur> list(char sexe, Session session) {
+        // 1. Version sans @NamedQuery dans l'entité :
+        //Query<Joueur> query = session.createQuery("SELECT j FROM Joueur j WHERE j.sexe = ?1", Joueur.class);
 
-        try {
-            BasicDataSource dataSource = DataSourceProvider.getSingleDataSourceInstance();
-            conn = dataSource.getConnection();
-
-            // Requête SQL
-            PreparedStatement statement = conn.prepareStatement("SELECT ID, NOM, PRENOM, SEXE FROM JOUEUR");
-            ResultSet rs =statement.executeQuery();
-
-            while (rs.next()) {
-                Joueur joueur = new Joueur();
-                joueur.setId(rs.getLong("ID"));
-                joueur.setNom(rs.getString("NOM"));
-                joueur.setPrenom(rs.getString("PRENOM"));
-                joueur.setSexe(rs.getString("SEXE").charAt(0));
-                joueurs.add(joueur);
-            }
-
-            // Success
-            System.out.println("Liste des Joueurs lue avec succès.");
-        } catch (SQLException e) {
-            e.printStackTrace();
-            try {
-                if (conn != null) conn.rollback();
-            } catch(SQLException e2) {
-                e2.printStackTrace();
-            }
-        }
-        finally {
-            try {
-                if (conn!=null) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
+        // 2. Version avec les NamedQueries définies dans l'entité :
+        Query<Joueur> query = session.createNamedQuery("given_sexe", Joueur.class);
+        query.setParameter(1, sexe);
+        List<Joueur> joueurs = query.getResultList();
         return joueurs;
     }
+
 }

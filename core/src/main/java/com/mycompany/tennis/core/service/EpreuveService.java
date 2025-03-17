@@ -12,7 +12,9 @@ import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 public class EpreuveService {
     private final EpreuveRepositoryImpl epreuveRepository;
@@ -87,6 +89,38 @@ public class EpreuveService {
             if (tx != null) tx.rollback();
         }
         return dto;
+    }
+
+    public List<EpreuveFullDto> getListeEpreuves(String codeTournoi) {
+        Transaction tx = null;
+        List<EpreuveFullDto> dtos = new ArrayList<EpreuveFullDto>();
+
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            tx = session.beginTransaction();
+
+            // Liste d'Epreuves
+            List<Epreuve> epreuves = epreuveRepository.list(codeTournoi, session);
+
+            // Conversion de la liste en liste de Dto
+            for (Epreuve epreuve : epreuves) {
+                EpreuveFullDto dto = new EpreuveFullDto();
+                dto.setId(epreuve.getId());
+                dto.setAnnee(epreuve.getAnnee());
+                dto.setTypeEpreuve(epreuve.getTypeEpreuve());
+                // Tournoi
+                TournoiDto tournoiDto = new TournoiDto();
+                tournoiDto.setId(epreuve.getTournoi().getId());
+                tournoiDto.setNom(epreuve.getTournoi().getNom());
+                tournoiDto.setCode(epreuve.getTournoi().getCode());
+                dto.setTournoi(tournoiDto);
+                dtos.add(dto);
+            }
+            tx.commit();
+        } catch (Throwable t) {
+            t.printStackTrace();
+            if (tx != null) tx.rollback();
+        }
+        return dtos;
     }
 
 }

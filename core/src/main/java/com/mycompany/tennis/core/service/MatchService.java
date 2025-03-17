@@ -73,6 +73,20 @@ public class MatchService {
         }
     }
 
+    public void deleteMatch(Long id) {
+        Transaction tx = null;
+
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            tx = session.beginTransaction();
+            matchRepository.delete(id, session);
+            tx.commit();
+            System.out.println("Match supprimé avec succès.");
+        } catch (Throwable t) {
+            t.printStackTrace();
+            if (tx != null) tx.rollback();
+        }
+    }
+
     // Fonction qui inverse le vainqueur et le finaliste d'un match (victoire par tapis vert) et reset son score
     public void tapisVert(Long id) {
         Match match = null;

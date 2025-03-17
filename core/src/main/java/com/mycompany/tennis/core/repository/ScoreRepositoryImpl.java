@@ -13,4 +13,9 @@ public class ScoreRepositoryImpl {
     public void create(Score score, Session session) {
         session.persist(score); // Ajout de l'objet dans la session Hibernate (état transient → état persistant)
     }
+
+    public void delete(Long id, Session session) {
+        Score score = session.get(Score.class, id);
+        if (score != null) session.remove(score);
+    }
 }

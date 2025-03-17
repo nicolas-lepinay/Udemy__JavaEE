@@ -5,6 +5,7 @@ import com.mycompany.tennis.core.entity.Epreuve;
 import com.mycompany.tennis.core.entity.Joueur;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -26,5 +27,12 @@ public class EpreuveRepositoryImpl {
     public Epreuve getById(Long id, Session session) {
         Epreuve epreuve = session.get(Epreuve.class, id);
         return epreuve;
+    }
+
+    public List<Epreuve> list(String codeTournoi, Session session) {
+        Query<Epreuve> query = session.createQuery("SELECT e FROM Epreuve e join fetch e.tournoi WHERE e.tournoi.code = ?1", Epreuve.class);
+        query.setParameter(1, codeTournoi);
+        List<Epreuve> epreuves = query.getResultList();
+        return epreuves;
     }
 }

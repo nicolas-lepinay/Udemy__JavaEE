@@ -4,9 +4,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import org.hibernate.annotations.NamedQuery;
 
 import java.util.Objects;
 
+@NamedQuery(query = "SELECT j FROM Joueur j WHERE j.sexe = ?1", name = "given_sexe")
+@NamedQuery(query = "SELECT j FROM Joueur j WHERE j.nom = ?1", name = "given_nom")
 @Entity
 public class Joueur {
     @Id

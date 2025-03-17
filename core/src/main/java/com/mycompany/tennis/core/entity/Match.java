@@ -26,7 +26,8 @@ public class Match {
     @OneToOne(
             fetch = FetchType.LAZY,
             mappedBy = "match", // Attribut "match" de la classe Score
-            cascade = CascadeType.PERSIST // En persistant le Match, toutes ses entités liées (comme Score) seront aussi persistantes
+            cascade = CascadeType.PERSIST, // En persistant le Match, toutes ses entités liées (comme Score) seront aussi persistantes
+            orphanRemoval = true // Si un Match est supprimé, supprime aussi son Score lié.
     )
     private Score score;
 

@@ -19,7 +19,10 @@ public class Score {
     @Column(name = "SET_5")
     private Byte set5;
     //@Transient // Exclut cet attribut du mapping Hibernate
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.REMOVE // Supprimer le Match lié si le Score est supprimé
+    )
     @JoinColumn(name = "ID_MATCH")
     private Match match;
 
