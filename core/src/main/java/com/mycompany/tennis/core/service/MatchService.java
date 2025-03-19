@@ -47,7 +47,7 @@ public class MatchService {
 
             // Créer le match
             Match match = new Match();
-            match.setEpreuve(epreuveRepository.getById(matchDto.getEpreuve().getId(), session));
+            match.setEpreuve(epreuveRepository.getById(matchDto.getEpreuve().getId()));
             match.setFinaliste(joueurRepository.getById(matchDto.getFinaliste().getId(), session));
             match.setVainqueur(joueurRepository.getById(matchDto.getVainqueur().getId(), session));
 

@@ -1,5 +1,6 @@
 package com.mycompany.tennis.core.service;
 
+import com.mycompany.tennis.core.EntityManagerHolder;
 import com.mycompany.tennis.core.HibernateUtil;
 import com.mycompany.tennis.core.dto.EpreuveFullDto;
 import com.mycompany.tennis.core.dto.EpreuveLightDto;
@@ -8,6 +9,8 @@ import com.mycompany.tennis.core.dto.TournoiDto;
 import com.mycompany.tennis.core.entity.Epreuve;
 import com.mycompany.tennis.core.entity.Joueur;
 import com.mycompany.tennis.core.repository.EpreuveRepositoryImpl;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -31,7 +34,7 @@ public class EpreuveService {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             tx = session.beginTransaction();
             // Récupère l'épreuve
-            epreuve = epreuveRepository.getById(id, session);
+            epreuve = epreuveRepository.getById(id);
             // Récupère le tournoi (nécessite Hibernate.initialize() (uniquement SANS Dto ?), car Tournoi est en LazyLoading
             // Inutile avec les Dto ?
             Hibernate.initialize(epreuve.getTournoi()); // Hibernate.unproxy() depuis Hibernate 5.2
@@ -75,7 +78,7 @@ public class EpreuveService {
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             tx = session.beginTransaction();
-            epreuve = epreuveRepository.getById(id, session);
+            epreuve = epreuveRepository.getById(id);
             dto = new EpreuveLightDto();
             dto.setId(epreuve.getId());
             dto.setAnnee(epreuve.getAnnee());
@@ -92,14 +95,15 @@ public class EpreuveService {
     }
 
     public List<EpreuveFullDto> getListeEpreuves(String codeTournoi) {
-        Transaction tx = null;
+        EntityTransaction tx = null;
         List<EpreuveFullDto> dtos = new ArrayList<EpreuveFullDto>();
 
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            tx = session.beginTransaction();
+        try (EntityManager em = EntityManagerHolder.getCurrentEntityManager()) {
+            tx = em.getTransaction();
+            tx.begin();
 
             // Liste d'Epreuves
-            List<Epreuve> epreuves = epreuveRepository.list(codeTournoi, session);
+            List<Epreuve> epreuves = epreuveRepository.list(codeTournoi);
 
             // Conversion de la liste en liste de Dto
             for (Epreuve epreuve : epreuves) {

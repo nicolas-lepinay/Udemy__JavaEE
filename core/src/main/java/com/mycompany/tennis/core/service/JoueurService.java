@@ -1,9 +1,12 @@
 package com.mycompany.tennis.core.service;
 
+import com.mycompany.tennis.core.EntityManagerHolder;
 import com.mycompany.tennis.core.HibernateUtil;
 import com.mycompany.tennis.core.dto.JoueurDto;
 import com.mycompany.tennis.core.entity.Joueur;
 import com.mycompany.tennis.core.repository.JoueurRepositoryImpl;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -84,14 +87,15 @@ public class JoueurService {
     }
 
     public List<JoueurDto> getListeJoueurs(char sexe) {
-        Transaction tx = null;
+        EntityTransaction tx = null;
         List<JoueurDto> dtos = new ArrayList<JoueurDto>();
 
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            tx = session.beginTransaction();
+        try (EntityManager em = EntityManagerHolder.getCurrentEntityManager()) {
+            tx = em.getTransaction();
+            tx.begin();
 
             // Liste de Joueurs
-            List<Joueur> joueurs = joueurRepository.list(sexe, session);
+            List<Joueur> joueurs = joueurRepository.list(sexe);
 
             // Conversion de la liste en liste de Dto
             for (Joueur joueur : joueurs) {
