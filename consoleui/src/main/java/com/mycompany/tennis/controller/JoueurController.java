@@ -1,5 +1,6 @@
 package com.mycompany.tennis.controller;
 
+import com.mycompany.tennis.core.dto.JoueurDto;
 import com.mycompany.tennis.core.entity.Joueur;
 import com.mycompany.tennis.core.service.JoueurService;
 
@@ -58,5 +59,15 @@ public class JoueurController {
         long identifiant = scanner.nextLong();
 
         joueurService.deleteJoueur(identifiant);
+    }
+
+    public void afficherListeJoueurs() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Quel est le sexe des joueurs à afficher (H/F) ?");
+        char sex = scanner.nextLine().charAt(0);
+
+        for(JoueurDto dto : joueurService.getListeJoueurs(sex)) {
+            System.out.println(dto.getPrenom() + " " + dto.getNom().toUpperCase() + " (" + dto.getSexe() + ")");
+        };
     }
 }
