@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ANNUAIRE JNDI (voir Section 11.65) -->
+<!-- Ce fichier va surcharger le fichier persistence.xml du module Core -->
+<!-- Sa lecture est spécifiée dans le fichier /webapp/WEB-INF/web.xml -->
+<Context>
+    <Resource name="jdbc/tennisDS"
+              auth="Container"
+              type="javax.sql.DataSource"
+              initialSize="5"
+              username="root"
+              password="root"
+              driverClassName="com.mysql.cj.jdbc.Driver"
+              url="jdbc:mysql://localhost:3306/tennis?useSSL=false"/>
+</Context>
