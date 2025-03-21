@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet("/listes")
+@WebServlet(value = "/listes") // URL
 public class ListJoueursServlet extends HttpServlet {
 
     private JoueurService joueurService;
@@ -28,7 +28,7 @@ public class ListJoueursServlet extends HttpServlet {
 
         req.setAttribute("listeHommes", listeHommes);
         req.setAttribute("listeFemmes", listeFemmes);
-        RequestDispatcher disp = req.getRequestDispatcher("listes.jsp"); // URL
+        RequestDispatcher disp = req.getRequestDispatcher("listes.jsp"); // Nom du fichier JSP
         disp.forward(req, resp);
     }
 }
